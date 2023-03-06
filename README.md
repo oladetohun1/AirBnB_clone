@@ -31,7 +31,7 @@ To start the command interpreter, navigate to the project directory and run ````
 
 ````
 $ ./console.py
-```
+````
 
 ## Execution
 
@@ -39,7 +39,7 @@ $ ./console.py
 Your shell should work like this in interactive mode:
 
   
-```
+````
 (hbnb) help
 
 Documented commands (type help <topic>):
@@ -50,11 +50,11 @@ EOF help quit
 (hbnb)
 (hbnb) quit
 $
-```
+````
 
 But also in non-interactive mode: (like the Shell project in C)
 
-```
+````
 $ echo "help" | ./console.py
 
 (hbnb)
@@ -78,34 +78,43 @@ EOF help quit
 (hbnb)
 $
 
-```
+````
 
 ## Using the Command Interpreter
 
 **Launching the console**
-```
+
+````
 $ ./console.py
 (hbnb) 
-```
+
+````
+
+
 **Creating a new object**
-```
+````
 (hbnb) create
 ** class name missing **
 (hbnb) create User
 670265eb-5982-489e-8b92-2dff054f0776
-```
+````
+
 **Show an object**
-```
+
+````
 (hbnb) show User
 ** instance id missing **
 (hbnb) show User 670265eb-5982-489e-8b92-2dff054f0776
 [User] (670265eb-5982-489e-8b92-2dff054f0776) {'created_at': datetime.datetime(2020, 2, 19, 18, 8, 58, 458246), 'id': '670265eb-5982-489e-8b92-2dff054f0776', 'updated_at': datetime.datetime(2020, 2, 19, 18, 8, 58, 458261)}
-```
+
+````
+
 **Update an object**
-```
+
+````
 (hbnb) all
 ["[User] (70f71c16-962b-48ad-9df8-9203fe23d612) {'created_at': datetime.datetime(2020, 2, 19, 18, 11, 32, 341144), 'id': '70f71c16-962b-48ad-9df8-9203fe23d612', 'updated_at': datetime.datetime(2020, 2, 19, 18, 11, 32, 341161)}"]
-(hbnb) update
+(hbnb) updatei
 ** class name missing **
 (hbnb) update User
 ** instance id missing **
@@ -115,16 +124,20 @@ $ ./console.py
 (hbnb) all
 ["[User] (70f71c16-962b-48ad-9df8-9203fe23d612) {'Age': 20, 'created_at': datetime.datetime(2020, 2, 19, 18, 11, 32, 341144), 'id': '70f71c16-962b-48ad-9df8-9203fe23d612', 'updated_at': datetime.datetime(2020, 2, 19, 18, 13, 9, 937933)}"]
 (hbnb)
-```
+
+````
 **Destroy an object**
-```
+
+````
 (hbnb) destroy
 ** class name missing **
 (hbnb) destroy User
 ** instance id missing **
 (hbnb) destroy User 670265eb-5982-489e-8b92-2dff054f0776
 (hbnb)
-```
+
+````
+
 ````
 # Create a new user
 (hbnb) create User email="example@example.com" password="password" first_name="John" last_name="Doe"
@@ -146,6 +159,7 @@ $ ./console.py
 ````
 
 ---
+
 ## Learning Objectives
 
 At the end of this project, you are expected to be able to explain to anyone, without the help of Google:
@@ -164,6 +178,8 @@ At the end of this project, you are expected to be able to explain to anyone, wi
 
 ---
 ## Authors
+
 ![oladetohun1](https://www.github.com/oladetohun1)
+
 
 ![jefferyson](https://www.github.com/jefferyson)
