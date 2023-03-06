@@ -138,23 +138,33 @@ $ ./console.py
 
 ````
 
+## Examples with data
+
+### Create a new user
 ````
-# Create a new user
 (hbnb) create User email="example@example.com" password="password" first_name="John" last_name="Doe"
-
-# List all users
+````
+### List all users
+````
 (hbnb) all User
+````
 
-# Create a new state
+### Create a new state
+````
 (hbnb) create State name="California"
+````
 
-# Create a new city
+### Create a new city
+````
 (hbnb) create City state_id="STATE_ID" name="San Francisco"
+````
 
-# Create a new property
+### Create a new property
+````
 (hbnb) create Place city_id="CITY_ID" user_id="USER_ID" name="Cozy Cottage" description="A charming and cozy cottage in the heart of San Francisco" number_rooms=2 number_bathrooms=1 max_guest=4 price_by_night=100 latitude=37.7749 longitude=-122.4194 amenity_ids="[1, 2, 3]"
-
-# List all properties
+````
+#### List all properties
+````
 (hbnb) all Place
 ````
 
@@ -179,7 +189,7 @@ At the end of this project, you are expected to be able to explain to anyone, wi
 ---
 ## Authors
 
-![oladetohun1](https://www.github.com/oladetohun1)
+[oladetohun1](https://www.github.com/oladetohun1)
 
 
-![jefferyson](https://www.github.com/jefferyson)
+[jefferyson](https://www.github.com/jefferyson)
