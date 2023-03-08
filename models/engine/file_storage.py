@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-import os
-sys.path.append('../../../AirBnB_clone')
 import json
 from model.base_model import BaseModel
 class FileStorage:
