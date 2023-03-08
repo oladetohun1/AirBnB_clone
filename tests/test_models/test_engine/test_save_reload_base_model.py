@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-import models
+import sys
+sys.path.append('../../../')
 from models.base_model import BaseModel
 from models import storage
 all_objs = storage.all()
