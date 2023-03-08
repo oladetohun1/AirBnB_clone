@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import uuid
 from datetime import datetime
-from models.__init__ import storage
+from models import storage
 
 class BaseModel:
     """A base class for defining common attributes
