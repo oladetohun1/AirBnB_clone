@@ -1,7 +1,6 @@
 #!/usr/bin/python3
-from engine.file_storage import storage
 from models.base_model import BaseModel
-from models.__init__ import storage
+from models import storage
 all_objs = storage.all()
 print("-- Reloaded objects --")
 for obj_id in all_objs.keys():
