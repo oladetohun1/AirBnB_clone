@@ -10,7 +10,7 @@ class HBNBCommand(cmd.Cmd):
     """
         This class defines the command interpreter
     """
-    prompt = "(hbnh) " #custom prompt
+    prompt = "(hbnb) " #custom prompt
     
     def do_quit(self, arg):
         """
