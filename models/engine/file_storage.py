@@ -2,7 +2,8 @@ import json
 
 
 class FileStorage:
-    """A class for serializing and deserializing instances to and from a JSON file"""
+    """A class for serializing and deserializing instances
+    to and from a JSON file"""
 
     __file_path = "file.json"
     __objects = {}
@@ -33,7 +34,8 @@ class FileStorage:
         from models.review import Review
         # import other necessary models here
         classes = {"BaseModel": BaseModel, "User": User, "Place":  Place,
-                   "State": State, "City": City, "Amenity": Amenity, "Review": Review}
+                   "State": State, "City": City, "Amenity": Amenity,
+                   "Review": Review}
         # add other necessary models to the classes dictionary
         try:
             with open(self.__file_path, 'r') as f:
