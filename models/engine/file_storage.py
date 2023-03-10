@@ -1,39 +1,41 @@
-#!/usr/bin/python3
 import json
-from models.base_model import BaseModel
+
 class FileStorage:
     """A class for serializing and deserializing instances to and from a JSON file"""
     
     __file_path = "file.json"
     __objects = {}
-    
+
     def all(self):
         """Return the dictionary __objects"""
         return self.__objects
-    
+
     def new(self, obj):
         """Set in __objects the obj with key <obj class name>.id"""
-        key = obj.__class__.__name__ + "." + obj.id
+        key = "{}.{}".format(obj.__class__.__name__, obj.id)
         self.__objects[key] = obj
-        
+
     def save(self):
         """Serialize __objects to the JSON file (path: __file_path)"""
-        objs_dict = {}
-        for key, obj in self.__objects.items():
-            objs_dict[key] = obj.to_dict()
-        with open(self.__file_path, 'w') as f:
-            json.dump(objs_dict, f)
-            
+        with open(self.__file_path, mode="w", encoding="utf-8") as file:
+            json.dump({k: v.to_dict() for k, v in self.__objects.items()}, file)
+
     def reload(self):
         """Deserialize the JSON file to __objects"""
+        from models.base_model import BaseModel
+        from models.user import User
+        # import other necessary models here
+        classes = {"BaseModel": BaseModel, "User": User}
+        # add other necessary models to the classes dictionary
         try:
             with open(self.__file_path, 'r') as f:
-                objs_dict = json.load(f)
-                for key, obj_dict in objs_dict.items():
-                    cls_name, obj_id = key.split(".")
-                    cls = globals()[cls_name]
-                    obj = cls(**obj_dict)
-                    self.__objects[key] = obj
+                obj_dict = json.load(f)
+                for obj_id, obj_attrs in obj_dict.items():
+                    obj_cls = obj_attrs['__class__']
+                    obj_attrs.pop('__class__', None)
+                    obj_attrs.pop('__module__', None)
+                    obj = classes[obj_cls](**obj_attrs)
+                    self.all()[obj_id] = obj
         except FileNotFoundError:
             pass
 

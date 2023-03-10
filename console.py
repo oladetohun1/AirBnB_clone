@@ -4,8 +4,10 @@ This module contains the command interpreter for the Airbnb project.
 """
 
 import cmd
+import sys
 from models.base_model import BaseModel
 from models import storage
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -13,7 +15,20 @@ class HBNBCommand(cmd.Cmd):
     Command interpreter for the Airbnb project.
     """
     prompt = "(hbnb) "
-    valid_classes = ["BaseModel"]
+    valid_classes = ["BaseModel", "User"]
+
+    
+    def do_quit(self, arg):
+        """
+            This Method  will exist the program
+        """
+        return True
+
+    def do_EOF(self, arg):
+        """
+            This Method also Exits the program.
+        """
+        return True
 
     def emptyline(self):
         """
@@ -92,20 +107,44 @@ class HBNBCommand(cmd.Cmd):
         args = arg.split()
         if not args:
             print("** class name missing **")
-        elif args[0] not in self.valid_classes:
+            return
+
+        cls_name = args[0]
+        if cls_name not in self.valid_classes:
             print("** class doesn't exist **")
-        elif len(args) < 2:
+            return
+
+        if len(args) < 2:
             print("** instance id missing **")
-        elif "{}.{}".format(args[0], args[1]) not in storage.all():
+            return
+
+        obj_id = args[1]
+        obj_key = "{}.{}".format(cls_name, obj_id)
+
+        if obj_key not in storage.all():
             print("** no instance found **")
-        elif len(args) < 3:
+            return
+
+        if len(args) < 3:
             print("** attribute name missing **")
-        elif len(args) < 4:
+            return
+
+        attr_name = args[2]
+        if len(args) < 4:
             print("** value missing **")
-        else:
-            obj = storage.all()["{}.{}".format(args[0], args[1])]
-            setattr(obj, args[2], type(getattr(obj, args[2]))(args[3]))
-            obj.save()
+            return
+
+        attr_value = args[3]
+        obj = storage.all()[obj_key]
+
+        try:
+            attr_value = type(getattr(obj, attr_name))(attr_value)
+        except Exception:
+            pass
+
+        setattr(obj, attr_name, attr_value)
+        obj.save()
+
 
 
 if __name__ == "__main__":
