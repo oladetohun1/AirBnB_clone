@@ -101,10 +101,10 @@ class HBNBCommand(cmd.Cmd):
         else:
             if len(args) == 1:
                 print([str(obj) for obj in objects.values()
-                        if type(obj).__name__ == args[0]])
+                       if type(obj).__name__ == args[0]])
             else:
                 print([str(obj) for obj in objects.values()
-                        if type(obj).__name__ == args[0]])
+                       if type(obj).__name__ == args[0]])
 
     def do_update(self, arg):
         """
