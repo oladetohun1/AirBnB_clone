@@ -15,7 +15,7 @@ class HBNBCommand(cmd.Cmd):
     Command interpreter for the Airbnb project.
     """
     prompt = "(hbnb) "
-    valid_classes = ["BaseModel", "User"]
+    valid_classes = ["BaseModel", "User", "Place", "State", "City", "Amenity", "Review"]
 
     
     def do_quit(self, arg):
@@ -86,19 +86,26 @@ class HBNBCommand(cmd.Cmd):
                 del storage.all()[key]
                 storage.save()
 
-    def do_all(self, arg):
-        """
-        Method to print all instances of a given class.
-        """
-        args = arg.split()
-        objects = storage.all()
-        if not arg:
-            print([str(obj) for obj in objects.values()])
-        elif args[0] not in self.valid_classes:
-            print("** class doesn't exist **")
-        else:
-            print([str(obj) for obj in objects.values()
-                   if type(obj).__name__ == args[0]])
+        def do_all(self, arg):
+            """
+            Method to print all instances of a given class or all instances.
+            """
+            args = arg.split()
+            objects = storage.all()
+            if not arg:
+                print([str(obj) for obj in objects.values()])
+            elif args[0] not in self.valid_classes:
+                print("** class doesn't exist **")
+            elif len(args) > 1 and args[1] != "all()":
+                print("** invalid command **")
+            else:
+                if len(args) == 1:
+                    print([str(obj) for obj in objects.values()
+                        if type(obj).__name__ == args[0]])
+                else:
+                    print([str(obj) for obj in objects.values()
+                        if type(obj).__name__ == args[0]])
+
 
     def do_update(self, arg):
         """
