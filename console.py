@@ -15,9 +15,9 @@ class HBNBCommand(cmd.Cmd):
     Command interpreter for the Airbnb project.
     """
     prompt = "(hbnb) "
-    valid_classes = ["BaseModel", "User", "Place", "State", "City", "Amenity", "Review"]
+    valid_classes = ["BaseModel", "User", "Place",
+                     "State", "City", "Amenity", "Review"]
 
-    
     def do_quit(self, arg):
         """
             This Method  will exist the program
@@ -101,11 +101,10 @@ class HBNBCommand(cmd.Cmd):
             else:
                 if len(args) == 1:
                     print([str(obj) for obj in objects.values()
-                        if type(obj).__name__ == args[0]])
+                           if type(obj).__name__ == args[0]])
                 else:
                     print([str(obj) for obj in objects.values()
-                        if type(obj).__name__ == args[0]])
-
+                           if type(obj).__name__ == args[0]])
 
     def do_update(self, arg):
         """
@@ -153,7 +152,5 @@ class HBNBCommand(cmd.Cmd):
         obj.save()
 
 
-
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
-

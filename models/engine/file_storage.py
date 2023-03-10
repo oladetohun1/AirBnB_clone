@@ -1,8 +1,9 @@
 import json
 
+
 class FileStorage:
     """A class for serializing and deserializing instances to and from a JSON file"""
-    
+
     __file_path = "file.json"
     __objects = {}
 
@@ -18,7 +19,8 @@ class FileStorage:
     def save(self):
         """Serialize __objects to the JSON file (path: __file_path)"""
         with open(self.__file_path, mode="w", encoding="utf-8") as file:
-            json.dump({k: v.to_dict() for k, v in self.__objects.items()}, file)
+            json.dump({k: v.to_dict()
+                      for k, v in self.__objects.items()}, file)
 
     def reload(self):
         """Deserialize the JSON file to __objects"""
@@ -30,7 +32,8 @@ class FileStorage:
         from models.amenity import Amenity
         from models.review import Review
         # import other necessary models here
-        classes = {"BaseModel": BaseModel, "User": User, "Place":  Place, "State": State, "City": City, "Amenity": Amenity, "Review": Review}
+        classes = {"BaseModel": BaseModel, "User": User, "Place":  Place,
+                   "State": State, "City": City, "Amenity": Amenity, "Review": Review}
         # add other necessary models to the classes dictionary
         try:
             with open(self.__file_path, 'r') as f:
@@ -43,4 +46,3 @@ class FileStorage:
                     self.all()[obj_id] = obj
         except FileNotFoundError:
             pass
-
