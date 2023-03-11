@@ -25,9 +25,3 @@ my_user2.email = "airbnb2@mail.com"
 my_user2.password = "root"
 my_user2.save()
 print(my_user2)
-
-print("--Create an Amenity for user")
-my_amenity = Amenity()
-my_amenity.name = "name"
-my_amenity.save()
-print(my_amenity)

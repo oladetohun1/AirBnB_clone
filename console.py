@@ -9,6 +9,9 @@ from models.base_model import BaseModel
 from models import storage
 from models.user import User
 
+valid_classes = ["BaseModel", "User", "Place",
+                 "State", "City", "Amenity", "Review"]
+
 
 class HBNBCommand(cmd.Cmd):
     """
@@ -26,7 +29,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         """
-            This Method also Exits the program.
+            This Method Exits the program.
         """
         return True
 
@@ -37,9 +40,9 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, arg):
+        """This method creates a new instance of BaseModel
         """
-        Method to create a new BaseModel instance.
-        """
+
         if not arg:
             print("** class name missing **")
         elif arg not in self.valid_classes:
@@ -87,24 +90,20 @@ class HBNBCommand(cmd.Cmd):
                 storage.save()
 
     def do_all(self, arg):
-        """
-        Method to print all instances of a given class or all instances.
-        """
-        args = arg.split()
-        objects = storage.all()
-        if not arg:
-            print([str(obj) for obj in objects.values()])
-        elif args[0] not in self.valid_classes:
+        """Usage: all or all <class> or <class>.all()
+        Display string representations of all instances of a given class.
+        If no class is specified, displays all instantiated objects."""
+        argl = arg.split()
+        if len(argl) > 0 and argl[0] not in valid_classes:
             print("** class doesn't exist **")
-        elif len(args) > 1 and args[1] != "all()":
-            print("** invalid command **")
         else:
-            if len(args) == 1:
-                print([str(obj) for obj in objects.values()
-                       if type(obj).__name__ == args[0]])
-            else:
-                print([str(obj) for obj in objects.values()
-                       if type(obj).__name__ == args[0]])
+            objl = []
+            for obj in storage.all().values():
+                if len(argl) > 0 and argl[0] == obj.__class__.__name__:
+                    objl.append(obj.__str__())
+                elif len(argl) == 0:
+                    objl.append(obj.__str__())
+            print(objl)
 
     def do_update(self, arg):
         """
@@ -150,6 +149,42 @@ class HBNBCommand(cmd.Cmd):
 
         setattr(obj, attr_name, attr_value)
         obj.save()
+
+    def my_count(self, class_n):
+        """
+        Method to count the number of instances of a class.
+        """
+        count = 0
+        for key, value in storage.all().items():
+            if class_n in key:
+                count += 1
+        print(count)
+
+    def default(self, arg):
+        """
+        Method to handle the default case.
+        """
+        args = arg.split(".")
+        if len(args) > 1:
+            if args[1] == "all()":
+                self.do_all(args[0])
+            elif args[1] == "count()":
+                self.my_count(args[0])
+            elif args[1].startswith("show("):
+                id = args[1].split("(")[1].split(")")[0]
+                self.do_show("{} {}".format(args[0], id))
+            elif args[1].startswith("destroy("):
+                id = args[1].split("(")[1].split(")")[0]
+                self.do_destroy("{} {}".format(args[0], id))
+            elif args[1].startswith("update("):
+                id = args[1].split("(")[1].split(",")[0]
+                attr = args[1].split(",")[1].split(")")[0]
+                value = args[1].split(",")[2].split(")")[0]
+                self.do_update("{} {} {} {}".format(args[0], id, attr, value))
+            else:
+                print("*** Unknown syntax: {}".format(arg))
+        else:
+            print("*** Unknown syntax: {}".format(arg))
 
 
 if __name__ == "__main__":
