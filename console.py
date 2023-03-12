@@ -112,47 +112,34 @@ class HBNBCommand(cmd.Cmd):
     def do_update(self, arg):
         """
         Method to update an instance attribute.
+        Update an instance based on the class name and id with a dictionary:
+        <class name>.update(<id>, <dictionary representation>)
         """
         args = arg.split()
-        if not args:
+        if len(args) == 0:
             print("** class name missing **")
             return
-
-        cls_name = args[0]
-        if cls_name not in self.valid_classes:
+        elif args[0] not in self.classes:
             print("** class doesn't exist **")
             return
-
-        if len(args) < 2:
+        if len(args) == 1:
             print("** instance id missing **")
             return
-
-        obj_id = args[1]
-        obj_key = "{}.{}".format(cls_name, obj_id)
-
-        if obj_key not in storage.all():
+        elif args[1] not in self.ids[args[0]]:
             print("** no instance found **")
             return
-
-        if len(args) < 3:
-            print("** attribute name missing **")
+        if len(args) == 2:
+            print("** dictionary missing **")
             return
-
-        attr_name = args[2]
-        if len(args) < 4:
-            print("** value missing **")
-            return
-
-        attr_value = args[3]
-        obj = storage.all()[obj_key]
-
         try:
-            attr_value = type(getattr(obj, attr_name))(attr_value)
-        except Exception:
-            pass
+            obj_dict = eval('{' + ' '.join(args[2:]) + '}')
+        except:
+            print("** invalid syntax for dictionary **")
+            return
+        obj = self.classes[args[0]].objects[args[1]]
+        obj.__dict__.update(obj_dict)
+        storage.save()
 
-        setattr(obj, attr_name, attr_value)
-        obj.save()
 
     def my_count(self, class_n):
         """
