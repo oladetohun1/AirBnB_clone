@@ -1,24 +1,52 @@
 #!/usr/bin/python3
+"""Unittest module for the Place Class."""
+
 import unittest
-from tests.test_models.test_base_model import test_basemodel
+from datetime import datetime
+import time
 from models.place import Place
+import re
+import json
+from models.engine.file_storage import FileStorage
+import os
+from models import storage
+from models.base_model import BaseModel
 
 
-class TestBaseModel(unittest.TestCase):
-    def test_str(self):
-        place = Place()
-        self.assertEqual(place.city_id, "")
-        self.assertEqual(place.user_id, "")
-        self.assertEqual(place.name, "")
-        self.assertEqual(place.description, "")
-        self.assertEqual(place.number_rooms, 0)
-        self.assertEqual(place.number_bathrooms, 0)
-        self.assertEqual(place.max_guest, 0)
-        self.assertEqual(place.price_by_night, 0)
-        self.assertEqual(place.latitude, 0.0)
-        self.assertEqual(place.longitude, 0.0)
-        self.assertEqual(place.amenity_ids, [])
+class TestPlace(unittest.TestCase):
 
-    def test_parent(self):
-        place = Place()
-        self.assertTrue(isinstance(place, BaseModel))
+    """Test Cases for the Place class."""
+
+    def setUp(self):
+        """Sets up test methods."""
+        pass
+
+    def tearDown(self):
+        """Tears down test methods."""
+        self.resetStorage()
+        pass
+
+    def resetStorage(self):
+        """Resets FileStorage data."""
+        FileStorage._FileStorage__objects = {}
+        if os.path.isfile(FileStorage._FileStorage__file_path):
+            os.remove(FileStorage._FileStorage__file_path)
+
+    def test_8_instantiation(self):
+        """Tests instantiation of Place class."""
+
+        b = Place()
+        self.assertEqual(str(type(b)), "<class 'models.place.Place'>")
+        self.assertIsInstance(b, Place)
+        self.assertTrue(issubclass(type(b), BaseModel))
+
+    def test_8_attributes(self):
+        """Tests the attributes of Place class."""
+        attributes = storage.attributes()["Place"]
+        o = Place()
+        for k, v in attributes.items():
+            self.assertTrue(hasattr(o, k))
+            self.assertEqual(type(getattr(o, k, None)), v)
+
+if __name__ == "__main__":
+    unittest.main()

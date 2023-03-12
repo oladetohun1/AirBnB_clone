@@ -1,6 +1,7 @@
 import json
 
 
+
 class FileStorage:
     """A class for serializing and deserializing instances
     to and from a JSON file"""
