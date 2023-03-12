@@ -44,3 +44,18 @@ class BaseModel:
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
         return dictionary
+
+    if __name__ == "__main__":
+        from models.user import User
+        while True:
+            command = input("(hbnb) ")
+            if command.startswith("User.show"):
+                user_id = command.split("(")[1].split(")")[0].replace('"', '')
+                User.show(user_id)
+            elif command.startswith("User.update"):
+                params = command.split("(")[1].split(")")[0].split(", ")
+                user_id = params[0].replace('"', '')
+                update_dict = eval(params[1])
+                User.update(user_id, update_dict)
+            else:
+                print("Invalid command")

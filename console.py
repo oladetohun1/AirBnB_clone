@@ -4,17 +4,15 @@ This module contains the command interpreter for the Airbnb project.
 """
 
 import cmd
-from models.base_model import BaseModel
+import re
 from models import storage
-from models.user import User
-from models.state import State
-from models.city import City
 from models.amenity import Amenity
+from models.base_model import BaseModel
+from models.city import City
 from models.place import Place
 from models.review import Review
-
-valid_classes = ["BaseModel", "User", "Place",
-                 "State", "City", "Amenity", "Review"]
+from models.state import State
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -98,7 +96,7 @@ class HBNBCommand(cmd.Cmd):
         Display string representations of all instances of a given class.
         If no class is specified, displays all instantiated objects."""
         argl = arg.split()
-        if len(argl) > 0 and argl[0] not in valid_classes:
+        if len(argl) > 0 and argl[0] not in self.valid_classes:
             print("** class doesn't exist **")
         else:
             objl = []
@@ -112,34 +110,47 @@ class HBNBCommand(cmd.Cmd):
     def do_update(self, arg):
         """
         Method to update an instance attribute.
-        Update an instance based on the class name and id with a dictionary:
-        <class name>.update(<id>, <dictionary representation>)
         """
         args = arg.split()
-        if len(args) == 0:
+        if not args:
             print("** class name missing **")
             return
-        elif args[0] not in self.classes:
+
+        cls_name = args[0]
+        if cls_name not in self.valid_classes:
             print("** class doesn't exist **")
             return
-        if len(args) == 1:
+
+        if len(args) < 2:
             print("** instance id missing **")
             return
-        elif args[1] not in self.ids[args[0]]:
+
+        obj_id = args[1]
+        obj_key = "{}.{}".format(cls_name, obj_id)
+
+        if obj_key not in storage.all():
             print("** no instance found **")
             return
-        if len(args) == 2:
-            print("** dictionary missing **")
-            return
-        try:
-            obj_dict = eval('{' + ' '.join(args[2:]) + '}')
-        except:
-            print("** invalid syntax for dictionary **")
-            return
-        obj = self.classes[args[0]].objects[args[1]]
-        obj.__dict__.update(obj_dict)
-        storage.save()
 
+        if len(args) < 3:
+            print("** attribute name missing **")
+            return
+
+        attr_name = args[2]
+        if len(args) < 4:
+            print("** value missing **")
+            return
+
+        attr_value = args[3]
+        obj = storage.all()[obj_key]
+
+        try:
+            attr_value = type(getattr(obj, attr_name))(attr_value)
+        except Exception:
+            pass
+
+        setattr(obj, attr_name, attr_value)
+        obj.save()
 
     def my_count(self, class_n):
         """
@@ -151,31 +162,62 @@ class HBNBCommand(cmd.Cmd):
                 count += 1
         print(count)
 
-    def default(self, arg):
+    def default(self, line):
+        """Method to take care of following commands:
+        <class name>.all()
+        <class name>.count()
+        <class name>.show(<id>)
+        <class name>.destroy(<id>)
+        <class name>.update(<id>, <attribute name>, <attribute value>)
+        <class name>.update(<id>, <dictionary representation)
+        Description:
+            Creates a list representations of functional models
+            Then use the functional methods to implement user
+            commands, by validating all the input commands
         """
-        Method to handle the default case.
-        """
-        args = arg.split(".")
-        if len(args) > 1:
-            if args[1] == "all()":
-                self.do_all(args[0])
-            elif args[1] == "count()":
-                self.my_count(args[0])
-            elif args[1].startswith("show("):
-                id = args[1].split("(")[1].split(")")[0]
-                self.do_show("{} {}".format(args[0], id))
-            elif args[1].startswith("destroy("):
-                id = args[1].split("(")[1].split(")")[0]
-                self.do_destroy("{} {}".format(args[0], id))
-            elif args[1].startswith("update("):
-                id = args[1].split("(")[1].split(",")[0]
-                attr = args[1].split(",")[1].split(")")[0]
-                value = args[1].split(",")[2].split(")")[0]
-                self.do_update("{} {} {} {}".format(args[0], id, attr, value))
+        
+        valid_commands = ["all", "count", "show", "destroy", "update"]
+
+        # Parse the input line using regular expressions
+        match = re.match(r"^(\w+)\.(\w+)\((.*)\)$", line)
+        if not match:
+            return super().default(line)
+
+        class_name, command_name, args_str = match.groups()
+
+        # Check if the class and command are valid
+        if class_name not in self.valid_classes or command_name not in valid_commands:
+            return super().default(line)
+
+        # Call the appropriate method based on the command
+        method = getattr(self, "do_" + command_name)
+        if command_name == "all" or command_name == "count":
+            method(class_name)
+        elif command_name == "show" or command_name == "destroy":
+            id = args_str.strip(")")
+            method("{} {}".format(class_name, id))
+        elif command_name == "update":
+            # Check if the arguments are valid
+            if "," not in args_str:
+                return super().default(line)
+
+            id, rest = args_str.split(",", maxsplit=1)
+            if rest.startswith("{"):
+                # Update with dictionary representation
+                try:
+                    update_dict = eval(rest)
+                except:
+                    return super().default(line)
+                for k, v in update_dict.items():
+                    method("{} {} {} {}".format(class_name, id, k, v))
             else:
-                print("*** Unknown syntax: {}".format(arg))
-        else:
-            print("*** Unknown syntax: {}".format(arg))
+                # Update with attribute name and value
+                rest = rest.strip()
+                if "," not in rest:
+                    return super().default(line)
+                attr_name, attr_value = rest.split(",", maxsplit=1)
+                method("{} {} {} {}".format(class_name, id, attr_name, attr_value))
+
 
 
 if __name__ == "__main__":
