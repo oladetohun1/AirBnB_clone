@@ -1,0 +1,8 @@
+header{
+    
+    background-color: #ffffff;
+    height: 70px;
+    width: 100%;
+    border-bottom: 1px solid #cccccc;
+    background: #ffffff url('../images/icon.png')  20px center no-repeat;
+}
